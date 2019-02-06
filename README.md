@@ -1,37 +1,44 @@
 
 
-AB4Py python 3 module for working with MacOS/OS X Address Book
+#AB4Py python 3 module for working with MacOS/OS X Address Book
 
-Needed the Python to Objective-C bridge library PyObjC. 
-Actual version 5.1.2 was released on 2018-12-13 
-https://pyobjc.readthedocs.io/en/latest/index.html
+###Needed the Python to Objective-C bridge library PyObjC. 
+###Actual version 5.1.2 was released on 2018-12-13 
+###https://pyobjc.readthedocs.io/en/latest/index.html
 
 
 
+<<<<<<< HEAD
+#Using function from AddressBook module:
+
+###Getting reference on Address Book
+- book = ABGetSharedAddressBook()
+- book = AddressBook.ABAddressBook.sharedAddressBook()
+=======
 - Using function from AddressBook module:
-
 Getting reference on Address Book
 book = ABGetSharedAddressBook()
 book = AddressBook.ABAddressBook.sharedAddressBook()
+>>>>>>> e7122a59c98555ff043d1d8c2d615ea7a368317a
 
-- Getting reference on Login Person
-me = ABGetMe(book)
+###Getting reference on Login Person
+- me = ABGetMe(book)
 
-- Creating of new person record
+###Creating of new person record
 new_person = ABPersonCreate()
 
-- Get properties of persons record in accordance with key
+###Get properties of persons record in accordance with key
 RefPerson.valueForProperty_(kABMiddleNameProperty)
 
-- Create MultiValue record
-emails = ABMultiValueCreateMutable()
-phones = ABMultiValueCreateMutable()
-addresses = ABMultiValueCreateMutable()
+###Create MultiValue record
+- emails = ABMultiValueCreateMutable()
+- phones = ABMultiValueCreateMutable()
+- addresses = ABMultiValueCreateMutable()
 
-adr_tmpl['City'] = "Москва"
-adr_tmpl['Country'] = 'Россия'
-adr_tmpl['Street'] = "Тупик нечистой силы, 13"
-adr_tmpl['ZIP'] = "123123"
+    adr_tmpl['City'] = "Москва"
+    adr_tmpl['Country'] = 'Россия'
+    adr_tmpl['Street'] = "Тупик нечистой силы, 13"
+    adr_tmpl['ZIP'] = "123123"
 
 - Insert element of MultiValue record
 
@@ -50,6 +57,7 @@ ABAddRecord(book, new_person)
 
 - Save address book
 ABSave(book)
+
 
 - Function in this module:
 SearchPersonByName(Addr_book, Name)
