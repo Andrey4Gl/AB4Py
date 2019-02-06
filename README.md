@@ -9,7 +9,6 @@ https://pyobjc.readthedocs.io/en/latest/index.html
 
 
 - Using function from AddressBook module:
-
 Getting reference on Address Book
 book = ABGetSharedAddressBook()
 book = AddressBook.ABAddressBook.sharedAddressBook()
