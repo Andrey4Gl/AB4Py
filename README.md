@@ -9,6 +9,7 @@ https://pyobjc.readthedocs.io/en/latest/index.html
 
 
 - Using function from AddressBook module:
+
 Getting reference on Address Book
 book = ABGetSharedAddressBook()
 book = AddressBook.ABAddressBook.sharedAddressBook()
@@ -49,7 +50,6 @@ ABAddRecord(book, new_person)
 
 - Save address book
 ABSave(book)
-
 
 - Function in this module:
 SearchPersonByName(Addr_book, Name)
