@@ -1,41 +1,42 @@
 #! /usr/bin/env python
 
-"""
-(C)DGV Group.2019
-AB4Py module v0.1
-Working with MacOS/OS X Address Book
-Version MacOS 10.12 and above
 
-Needed the Python to Objective-C bridge library
-Actual version PyObjC 5.1.2 was released on 2018-12-13
-https://pyobjc.readthedocs.io/en/latest/index.html#
+# (C)DGV Group.2019
+# AB4Py module v0.1
+# Working with MacOS/OS X Address Book
+# Version MacOS 10.12 and above
+# Version python is 2.7 or 3.6 or above
 
-"""
+# Needed the Python to Objective-C bridge library
+# Actual version PyObjC 5.1.2 was released on 2018-12-13
+# https://pyobjc.readthedocs.io/en/latest/index.html#
+
+
 
 from AddressBook import *
 
-"""
-Persons record properties key:
 
-kABFirstNameProperty
-kABMiddleNameProperty
-kABLastNameProperty
+# Persons record properties key:
 
-kABEmailProperty
-kABPhoneProperty
-kABAddressProperty
+# kABFirstNameProperty
+# kABMiddleNameProperty
+# kABLastNameProperty
+#
+# kABEmailProperty
+# kABPhoneProperty
+# kABAddressProperty
+#
+# kABJobTitleProperty
+# kABOrganizationProperty
+# kABDepartmentProperty
+#
+# kABSocialProfileProperty
+# kABInstantMessageProperty
+#
+# kABBirthdayProperty
+#
+# kABNoteProperty
 
-kABJobTitleProperty
-kABOrganizationProperty
-kABDepartmentProperty
-
-kABSocialProfileProperty
-kABInstantMessageProperty
-
-kABBirthdayProperty
-
-kABNoteProperty
-"""
 
 
 ad_label_iphone = "iPhone"
@@ -46,70 +47,29 @@ ad_label_mobile = "_$!<Mobile>!$_"
 
 adr_tmpl = {'City': '', 'Country': '', 'CountryCode': 'RU', 'Street': '', 'ZIP': ''}
 
-"""
-Using function from AddressBook module:
+# Check python version 
+# Return True if you current version of python meets the requirements of this  module
 
-Getting reference on Address Book
-book = ABGetSharedAddressBook()
-book = AddressBook.ABAddressBook.sharedAddressBook()
+def CheckVersion() :
+    current_v = sys.version_info
+    if current_v.major == 2 :
+        if current_v.minor > 6 :
+            reload(sys)
+            sys.setdefaultencoding('utf8')    		
+            return True
+        else:
+            return False
+    if current_v.major == 3 :
+        if current_v.minor > 4 :
+            return True
+        else:
+            return False
+    return False
 
-Getting reference on Login Person
-me = ABGetMe(book)
-
-Creating of new person record
-new_person = ABPersonCreate()
-
-Get properties of persons record in accordance with key
-RefPerson.valueForProperty_(kABMiddleNameProperty)
-
-Create MultiValue record
-emails = ABMultiValueCreateMutable()
-phones = ABMultiValueCreateMutable()
-addresses = ABMultiValueCreateMutable()
-
-adr_tmpl['City'] = "Москва"
-adr_tmpl['Country'] = 'Россия'
-adr_tmpl['Street'] = "Тупик нечистой силы, 13"
-adr_tmpl['ZIP'] = "123123"
-
-Insert element of MultiValue record
-
-ABMultiValueInsert(emails,"glav@psih.ru", ad_label_work, 0, None)
-ABMultiValueInsert(emails,"+7(985)999-99-99", ad_label_work, 0, None)
-ABMultiValueInsert(new_address,adr_tmpl, ad_label_work, 0, None)
-
-Add MultiValue record to the Personal record
-
-ABRecordSetValue(new_person,kABAddressProperty,new_address)
-ABRecordSetValue(new_person,kABEmailProperty,emails)
-ABRecordSetValue(new_person,kABPhoneProperty,phones)
-
-Add new_person record to address book 
-ABAddRecord(book, new_person)
-
-Save address book
-ABSave(book)
-
-Function in this module:
-SearchPersonByName(Addr_book, Name,)
-GetFullNamePerson(RefPerson)
-GetJobDataPerson(RefPerson)
-GetPhonesPerson(RefPerson)
-GetEmailsPerson(RefPerson)
-GetAddressesPerson(RefPerson)
-
-SetNewPersonRecord(LastName, FirstName='', MiddleName='')
-SetJobName(RefPerson, Organization, JobTitle ='', Department='')
-FormingPersonalRecord(record_ar, Organization = '')
-
-print_person_date(RefPerson)
-rus_phone_numb_norm(ph_numb)
-
-"""
 # Searching Person
 # return array of searching person
 
-def SearchPersonByName(Addr_book, Name,):
+def SearchPersonByName(Addr_book, Name):
     res_persons = []
     persons = ABCopyArrayOfAllPeople(Addr_book)
     for per1 in persons :
@@ -335,7 +295,9 @@ from datetime import datetime
 
 
 def main():
-
+    if not (CheckVersion()) :
+        print("Sorry, your python version is invalid.")
+        return 0
     lenst = len(sys.argv)
     if lenst < 2 :
         print("Usage : AB4Py.py -[key]")
@@ -351,16 +313,22 @@ def main():
             return 0
         elif "-m" in sys.argv[1] :
             book = ABGetSharedAddressBook()
+            if book == None :
+                print("Access to Adderess Book denid. Please check the rights of this application.")
+                return 0
             me = ABGetMe(book)
             print_person_date(me)
             return 0
-        elif "-f"
+        elif "-f" in sys.argv[1] :
             if len(sys.argv) < 3:
                 print("Name for the searching is not signed.")
                 return 3
             else:
                 s_name = sys.argv[2]
                 book = ABGetSharedAddressBook()
+                if book == None :                
+                    print("Access to Adderess Book denid. Please check the rights of this application.")
+                    return 0
                 persons = SearchPersonByName(Abook, s_ame,)
                 for per in persons :
                     print_person_date(per)
@@ -384,6 +352,9 @@ def main():
                 del(line_ar[0]) 
                 i = 0
                 book = ABGetSharedAddressBook()
+                if book == None :                
+                    print("Access to Adderess Book denid. Please check the rights of this application.")
+                    return 0
                 for row in line_ar :
                     record_ar = row[0].split(";")
                     new_person = FormingPersonalRecord(record_ar, Organiz)
