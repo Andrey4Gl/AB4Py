@@ -1,20 +1,15 @@
 #! /usr/bin/env python
-
-
-# (C)DGV Group.2019
-# AB4Py module v0.1
+# (C)Andrey Glushchenko 2018..2021
+# AB4Py module v0.5
 # Working with MacOS/OS X Address Book
 # Version MacOS 10.12 and above
-# Version python is 2.7 or 3.6 or above
+# Version python is 3.6 or above
 
 # Needed the Python to Objective-C bridge library
-# Actual version PyObjC 5.1.2 was released on 2018-12-13
+# Actual version PyObjC 8.1 was released on 2021-11-29
 # https://pyobjc.readthedocs.io/en/latest/index.html#
 
-
-
 from AddressBook import *
-
 
 # Persons record properties key:
 
@@ -38,7 +33,6 @@ from AddressBook import *
 # kABNoteProperty
 
 
-
 ad_label_iphone = "iPhone"
 ad_label_work = "_$!<Work>!$_"
 ad_label_home = "_$!<Home>!$_"
@@ -47,42 +41,49 @@ ad_label_mobile = "_$!<Mobile>!$_"
 
 adr_tmpl = {'City': '', 'Country': '', 'CountryCode': 'RU', 'Street': '', 'ZIP': ''}
 
-# Check python version 
-# Return True if you current version of python meets the requirements of this  module
 
-def CheckVersion() :
+def CheckVersion():
+    """Check python version
+
+    :return: Return True if you current version of python meets the requirements of this  module
+    """
     current_v = sys.version_info
-    if current_v.major == 2 :
-        if current_v.minor > 6 :
+    if current_v.major == 2:
+        if current_v.minor > 6:
             reload(sys)
-            sys.setdefaultencoding('utf8')    		
+            sys.setdefaultencoding('utf8')
             return True
         else:
             return False
-    if current_v.major == 3 :
-        if current_v.minor > 4 :
+    if current_v.major == 3:
+        if current_v.minor > 4:
             return True
         else:
             return False
     return False
 
-# Searching Person
-# return array of searching person
 
 def SearchPersonByName(Addr_book, Name):
+    """Searching Person
+
+    :param Addr_book: Address book reference
+    :param Name: Name of person
+    :return: array of searching person
+    """
     res_persons = []
     persons = ABCopyArrayOfAllPeople(Addr_book)
-    for per1 in persons :
-        if Name in GetFullNamePerson(per1) :
+    for per1 in persons:
+        if Name in GetFullNamePerson(per1):
             res_persons.append(per1)
     return res_persons
 
 
-# Return string with full name of the person
-# Parameter: reference to person record (ABPerson)
-# Return: string with persons full name
-
 def GetFullNamePerson(RefPerson):
+    """Return string with full name of the person
+
+    :param RefPerson: reference to person record (ABPerson)
+    :return: String with persons full name
+    """
     first = RefPerson.valueForProperty_(kABFirstNameProperty)
     if not first:
         first = ''
@@ -95,11 +96,12 @@ def GetFullNamePerson(RefPerson):
     return last + ' ' + first + ' ' + middle
 
 
-# Return array with fjob description of the person
-# Parameter: reference to person record (ABPerson)
-# Return: list with name of duty, departments name and organisations name
-
 def GetJobDataPerson(RefPerson):
+    """Return array with fjob description of the person
+
+    :param RefPerson: reference to person record (ABPerson)
+    :return: array with fjob description of the person
+    """
     idx = [kABJobTitleProperty, kABDepartmentProperty, kABOrganizationProperty]
     dd = []
     for i in range(3):
@@ -110,19 +112,20 @@ def GetJobDataPerson(RefPerson):
     return dd
 
 
-# Return array of phones of person
-# Parameter: reference to person record (ABPerson)
-# Return: list of phones and labels of it
-
-# the handler ABMultiValueSetPrimaryIdentifier(phones) will be added in the future
-
 def GetPhonesPerson(RefPerson):
+    """Return array of phones of person.
+
+    The handler ABMultiValueSetPrimaryIdentifier(phones) will be added in the future.
+
+    :param RefPerson: reference to person record (ABPerson)
+    :return: ph_array - list of phones and labels of it
+    """
     phones = ABRecordCopyValue(RefPerson, kABPhoneProperty)
-    ph_array =[]
-    if phones != None :
+    ph_array = []
+    if phones != None:
         ph = []
         for i in range(phones.count()):
-            ph=[]
+            ph = []
             ss = ABMultiValueCopyLabelAtIndex(phones, i)
             ph.append(ss[4:-4])
             ph.append(ABMultiValueCopyValueAtIndex(phones, i))
@@ -130,19 +133,20 @@ def GetPhonesPerson(RefPerson):
     return ph_array
 
 
-# Return array of E-mails of person
-# Parameter: reference to person record (ABPerson)
-# Return: list of e-mails and labels of it
-
-# the handler ABMultiValueSetPrimaryIdentifier(phones) will be added in the future
-
 def GetEmailsPerson(RefPerson):
+    """Return array of E-mails of person
+
+    The handler ABMultiValueSetPrimaryIdentifier(phones) will be added in the future
+    
+    :param RefPerson: reference to person record (ABPerson)
+    :return: list of e-mails and labels of it
+    """
     emails = ABRecordCopyValue(RefPerson, kABEmailProperty)
-    ph_array =[]
-    if emails != None :
+    ph_array = []
+    if emails != None:
         ph = []
         for i in range(emails.count()):
-            ph=[]
+            ph = []
             ss = ABMultiValueCopyLabelAtIndex(emails, i)
             ph.append(ss[4:-4])
             ph.append(ABMultiValueCopyValueAtIndex(emails, i))
@@ -150,13 +154,12 @@ def GetEmailsPerson(RefPerson):
     return ph_array
 
 
-# Return array of addresses of person
-# Parameter: reference to person record (ABPerson)
-# Return: list of addresses and labels of it
-
-# the handler ABMultiValueSetPrimaryIdentifier(phones) will be added in the future
-
 def GetAddressesPerson(RefPerson):
+    """Return array of addresses of person
+
+    :param RefPerson: reference to person record (ABPerson)
+    :return: list of string (addresses and labels of it)
+    """
     adds = ABRecordCopyValue(RefPerson, kABAddressProperty)
     ph_array = []
     for i in range(adds.count()):
@@ -168,15 +171,18 @@ def GetAddressesPerson(RefPerson):
     return ph_array
 
 
-
-
-
-#  Create new person record (ABPerson) and return reference on it
-#  Parameter: last name, first name and middle name
-
 def SetNewPersonRecord(LastName, FirstName='', MiddleName=''):
-    new_person = ABPersonCreate()
+    """Create new person record (ABPerson) and return reference on it
+    @type LastName: str
+    @type FirstName: str
+    @type MiddleName: str
+    @param str LastName: last name person
+    @param str FirstName: first name person (default "")
+    @param str MiddleName: middle name person (default "")
+    @return: reference on ABPerson
 
+    """
+    new_person = ABPersonCreate()
     res = ABRecordSetValue(new_person, kABLastNameProperty, LastName)
     if res == False:
         return None
@@ -189,151 +195,159 @@ def SetNewPersonRecord(LastName, FirstName='', MiddleName=''):
     return new_person
 
 
-# Set Organisation name, JobTitle and Department to the person record
-# Parameter: reference to person record (ABPerson), names of organisation, position and department
-# Return: execution result (True if successfully :)
+def SetJobName(RefPerson, Organization, JobTitle='', Department=''):
+    """Set Organisation name, JobTitle and Department to the person record
 
-def SetJobName(RefPerson, Organization, JobTitle ='', Department=''):    
+    :param RefPerson: reference to person record (ABPerson)
+    :param Organization: names of organisation
+    :param JobTitle: position (default "")
+    :param Department: department (default "")
+    :return: execution result (True if successfully :)
+    """
     res = ABRecordSetValue(RefPerson, kABOrganizationProperty, Organization)
     if res == False:
         return None
-    if len(JobTitle) > 0 :
+    if len(JobTitle) > 0:
         res = ABRecordSetValue(RefPerson, kABJobTitleProperty, JobTitle)
         if res == False:
             return None
-    if len(Department) > 0 :        
+    if len(Department) > 0:
         res = ABRecordSetValue(RefPerson, kABDepartmentProperty, Department)
         if res == False:
             return None
     return True
 
 
-# Forming new_person record for writing in the Address Book
-# Parameter: list of persons data and name of organisation
-# Return: reference to to person record (ABPerson) if successfully else None
+def FormingPersonalRecord(record_ar, Organization=''):
+    """Forming new_person record for writing to the Address Book
 
-def FormingPersonalRecord(record_ar, Organization = ''):
+    :param record_ar: list of persons data
+    :param Organization: name of organisation (default "")
+    :return: reference to to person record (ABPerson) if successfully else None
+    """
     new_person = SetNewPersonRecord(record_ar[2].strip(), record_ar[3].strip(), record_ar[4].strip())
-    if new_person == None :
+    if new_person == None:
         return None
-    res = SetJobName(new_person, Organization, record_ar[9].strip(), record_ar[10].strip())    
+    res = SetJobName(new_person, Organization, record_ar[9].strip(), record_ar[10].strip())
     if not res:
         return None
-        
+
     emails = ABMultiValueCreateMutable()
     phones = ABMultiValueCreateMutable()
-    
+
     ln = record_ar[7].strip()
     ph_ar = ln.split(" ")
     for ph in ph_ar:
         if not ABMultiValueInsert(phones, rus_phone_numb_norm(ph), ad_label_mobile, 0, None)[0]:
             return None
-    
+
     ln = record_ar[8].strip()
-    em_ar = ln.split(" ")        
-    for em in em_ar:        
+    em_ar = ln.split(" ")
+    for em in em_ar:
         if not ABMultiValueInsert(emails, record_ar[8].strip(), ad_label_work, 0, None)[0]:
             return None
-    
-    if not ABRecordSetValue(new_person,kABEmailProperty,emails):
-        return None    
-    if not ABRecordSetValue(new_person,kABPhoneProperty,phones):    
+
+    if not ABRecordSetValue(new_person, kABEmailProperty, emails):
         return None
-    
-    dt_birth = datetime.strptime( record_ar[11], '%d.%m.%Y') 
-    if not ABRecordSetValue(new_person,kABBirthdayProperty, dt_birth):    
+    if not ABRecordSetValue(new_person, kABPhoneProperty, phones):
+        return None
+
+    dt_birth = datetime.strptime(record_ar[11], '%d.%m.%Y')
+    if not ABRecordSetValue(new_person, kABBirthdayProperty, dt_birth):
         return None
     str_note = "Extension- {0}, Room - {1}".format(record_ar[5], record_ar[6])
     if not ABRecordSetValue(new_person, kABNoteProperty, str_note):
         return None
-        
+
     return new_person
 
-# Print to console data of person
-# Parameter: reference to person record (ABPerson)
-# Return: None
 
 def print_person_date(RefPerson):
+    """Print to console data of person
+
+    :param RefPerson: reference to person record (ABPerson)
+    """
     print(GetFullNamePerson(RefPerson))
-    stg_ar = [] 
+    stg_ar = []
     stg_ar = GetJobDataPerson(RefPerson)
     print("{:<40}\n{:<40}\n{:<40}\n".format(stg_ar[2], stg_ar[0], stg_ar[1]))
-     
+
     phones = []
-    phones  = GetPhonesPerson(RefPerson)
-    for ln in range(len(phones)) :
+    phones = GetPhonesPerson(RefPerson)
+    for ln in range(len(phones)):
         print(" {:<9} phone - {:<18}".format(phones[ln][0], phones[ln][1]))
     emails = []
-    emails  = GetEmailsPerson(RefPerson)
-    for ln in range(len(emails)) :
-        print(" {:<9} e-mail - {:<18}".format(emails[ln][0], emails[ln][1])) 
+    emails = GetEmailsPerson(RefPerson)
+    for ln in range(len(emails)):
+        print(" {:<9} e-mail - {:<18}".format(emails[ln][0], emails[ln][1]))
     print("")
 
 
-# Phone russian number normalisation
-# from 8-999-555-55-55 as parameter to +7(999)555-55-55 (return)
-
 def rus_phone_numb_norm(ph_numb):
+    """Phone russian number normalisation
+
+    :param ph_numb: from 8-999-555-55-55
+    :return: according to template +7(999)555-55-55
+    """
     extn = []
-    r0 = re.sub(r'\D','',ph_numb)
-    if len(r0) > 11 :
-        return '+7({0}){1}-{2}-{3};{4}'.format(r0[1:4],r0[4:7],r0[7:9],r0[9:11],r0[11:])
+    r0 = re.sub(r'\D', '', ph_numb)
+    if len(r0) > 11:
+        return '+7({0}){1}-{2}-{3};{4}'.format(r0[1:4], r0[4:7], r0[7:9], r0[9:11], r0[11:])
     else:
-        return '+7({0}){1}-{2}-{3}'.format(r0[1:4],r0[4:7],r0[7:9],r0[9:11])
-        
-        
-#Header for .csv file
+        return '+7({0}){1}-{2}-{3}'.format(r0[1:4], r0[4:7], r0[7:9], r0[9:11])
+
+
+# Header for .csv file
 
 header_file = ["#", "FullName", "LastName", "MiddleName", "LastName", "Extn",
                "Room", "ph_numb", "e-mail", "JobTitle", "Departmet", "Birthdate"]
 
 import sys
-import importlib
 import re
 import csv
 from datetime import datetime
 
 
 def main():
-    if not (CheckVersion()) :
+    if not (CheckVersion()):
         print("Sorry, your python version is invalid.")
         return 0
     lenst = len(sys.argv)
-    if lenst < 2 :
+    if lenst < 2:
         print("Usage : AB4Py.py -[key]")
         print("        AB4Py.py -h for help")
         return 0
-    else :
-        if "-h" in sys.argv[1] :
+    else:
+        if "-h" in sys.argv[1]:
             print("Usage : AB4Py.py -[key]")
             print("        AB4Py.py -m information about login person")
             print("        AB4Py.py -f 'Name' searching person by name")
             print("        AB4Py.py -i 'csv.file' 'Organization' - import records to Address book from .csv file")
             print("                    and setting organsations name for them")
             return 0
-        elif "-m" in sys.argv[1] :
+        elif "-m" in sys.argv[1]:
             book = ABGetSharedAddressBook()
-            if book == None :
-                print("Access to Adderess Book denid. Please check the rights of this application.")
+            if book == None:
+                print("Access to Address Book denied. Please check the rights of this application.")
                 return 0
             me = ABGetMe(book)
             print_person_date(me)
             return 0
-        elif "-f" in sys.argv[1] :
+        elif "-f" in sys.argv[1]:
             if len(sys.argv) < 3:
                 print("Name for the searching is not signed.")
                 return 3
             else:
                 s_name = sys.argv[2]
                 book = ABGetSharedAddressBook()
-                if book == None :                
-                    print("Access to Adderess Book denid. Please check the rights of this application.")
+                if book == None:
+                    print("Access to Address Book denied. Please check the rights of this application.")
                     return 0
-                persons = SearchPersonByName(Abook, s_ame,)
-                for per in persons :
+                persons = SearchPersonByName(book, s_name, )
+                for per in persons:
                     print_person_date(per)
                 return 0
-        elif "-i" in sys.argv[1] :
+        elif "-i" in sys.argv[1]:
             if len(sys.argv) < 3:
                 print("File .csv is not signed.")
                 return 3
@@ -347,31 +361,32 @@ def main():
                 with open(csv_path, "r") as f_obj:
                     reader = csv.reader(f_obj)
                     for row in reader:
-                       line_ar.append(row)
-                del(line_ar[0])
-                del(line_ar[0]) 
+                        line_ar.append(row)
+                del (line_ar[0])
+                del (line_ar[0])
                 i = 0
                 book = ABGetSharedAddressBook()
-                if book == None :                
-                    print("Access to Adderess Book denid. Please check the rights of this application.")
+                if book == None:
+                    print("Access to Address Book denied. Please check the rights of this application.")
                     return 0
-                for row in line_ar :
+                for row in line_ar:
                     record_ar = row[0].split(";")
                     new_person = FormingPersonalRecord(record_ar, Organiz)
                     if new_person == None:
                         continue
-                    print("Add: "+ row[0])
+                    print("Add: " + row[0])
                     ABAddRecord(book, new_person)
                     i += 1
                 else:
-                    print("Added " + str(i)+" records.")
+                    print("Added " + str(i) + " records.")
                     if i > 0:
                         ABSave(book)
                 return 0
-        else :
+        else:
             print("Wrong key!")
             print("AB4Py.py -h for help")
             return 1
-            
+
+
 if __name__ == "__main__":
     main()

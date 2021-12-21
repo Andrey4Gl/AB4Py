@@ -3,7 +3,7 @@
 # AB4Py python module for working with MacOS/OS X Address Book
 
 ### Needed the Python to Objective-C bridge library PyObjC. 
-### Actual version 5.1.2 was released on 2018-12-13 
+### Actual version 8.1 was released on 2021-11-29
 ### https://pyobjc.readthedocs.io/en/latest/index.html
 
 
@@ -13,7 +13,9 @@ Installing or upgrading PyObjC using pip is easy:
 
 =======
 
-This module was verified with python 2.7 and 3.6.  In the March 3, 2019 issue was added an adaptation for python 2.7, a version check of python, and a check of the accessing the MacOs address book result.
+This module was verified with python 3.8.  In the December 4, 2021 issue has lost support for python 2.7. If you need to use Python 2.7 you can clone previous issue. 
+The comments in the code have been brought in line with PEP 257. 
+PyCharm with virtual environment was used as IDE. However, it is run in an external terminal in order to comply with macOS contact access security policies. 
 
 Special thanks to Vladimir Litovko and  Eugene Prusakov for testing, tips and support.
 
